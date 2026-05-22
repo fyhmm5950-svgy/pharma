@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة اختبارات الفارماكولوجي - أسئلة List الحرفية</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #071624;
+            --card-bg: #132435;
+            --accent-green: #00e6a6;
+            --text-white: #ffffff;
+            --text-muted: #8ea1b4;
+            --wrong-red: #ff4a4a;
+            --blue-btn: #1a3a5a;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', 'Poppins', sans-serif; }
+        body { background-color: var(--bg-dark); color: var(--text-white); padding: 20px 10px; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+        .wrapper { width: 100%; max-width: 550px; }
+        header { text-align: center; margin-bottom: 20px; }
+        header h1 { font-size: 24px; font-weight: 900; }
+        
+        .score-board {
+            background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 15px;
+            text-align: center; margin-bottom: 20px; border: 1px solid rgba(0, 230, 166, 0.2);
+            font-size: 18px; font-weight: 700;
+        }
+        .score-board span { color: var(--accent-green); font-size: 24px; }
+
+        .menu-list { display: flex; flex-direction: column; gap: 12px; }
+        .menu-card {
+            background-color: var(--card-bg); border-radius: 15px; padding: 18px;
+            display: flex; align-items: center; justify-content: space-between;
+            cursor: pointer; transition: all 0.2s; border: 1px solid transparent;
+        }
+        .menu-card:hover { border-color: var(--accent-green); transform: scale(1.01); }
+        .menu-card-info { display: flex; align-items: center; gap: 15px; }
+        .menu-icon {
+            background: rgba(0, 230, 166, 0.1); color: var(--accent-green);
+            width: 45px; height: 45px; border-radius: 12px; display: flex;
+            align-items: center; justify-content: center; font-size: 20px;
+        }
+        .menu-texts h2 { font-size: 16px; font-weight: 700; }
+        .menu-texts p { font-size: 12px; color: var(--text-muted); }
+
+        .quiz-panel, .summary-panel { display: none; background-color: var(--card-bg); border-radius: 20px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        .quiz-nav-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
+        .btn-back { background: transparent; border: none; color: var(--accent-green); cursor: pointer; font-size: 15px; font-weight: bold; }
+
+        .question-container { display: flex; flex-direction: column; gap: 15px; }
+        .question-title { font-size: 15px; color: var(--accent-green); font-weight: bold; }
+        .question-text { font-size: 16px; direction: ltr; text-align: left; line-height: 1.5; background: rgba(0,0,0,0.1); padding: 12px; border-radius: 10px; font-weight: bold; }
+
+        .list-panel { display: flex; flex-direction: column; gap: 12px; }
+        .btn-trigger-answer { background: var(--blue-btn); border: 1px solid var(--accent-green); color: var(--text-white); padding: 12px; border-radius: 10px; cursor: pointer; font-weight: bold; }
+        .literal-answer-display { display: none; background: #0b1520; padding: 15px; border-radius: 10px; border-right: 4px solid var(--accent-green); direction: ltr; text-align: left; white-space: pre-line; line-height: 1.6; }
+        
+        .feedback-container { display: none; flex-direction: column; gap: 8px; text-align: center; }
+        .feedback-buttons { display: flex; gap: 10px; margin-top: 5px; }
+        .feedback-btn { flex: 1; padding: 12px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; color: white; font-size: 15px; }
+        .feedback-btn.yes { background: var(--accent-green); color: var(--bg-dark); }
+        .feedback-btn.no { background: var(--wrong-red); }
+        .feedback-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .nav-controls-bottom { display: flex; justify-content: space-between; margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; }
+        .btn-nav { background-color: transparent; border: 1px solid var(--text-muted); color: var(--text-white); padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 14px; }
+        .btn-nav:disabled { opacity: 0.3; cursor: not-allowed; }
+
+        .summary-content { text-align: center; padding: 10px 0; }
+        .summary-icon { font-size: 50px; color: var(--accent-green); margin-bottom: 15px; }
+        .summary-title { font-size: 20px; font-weight: bold; margin-bottom: 10px; }
+        .summary-stat { font-size: 18px; margin-bottom: 25px; color: var(--text-muted); }
+        .summary-stat span { color: var(--accent-green); font-weight: bold; font-size: 22px; }
+        .summary-actions { display: flex; flex-direction: column; gap: 12px; }
+        .btn-summary-action { width: 100%; padding: 14px; border-radius: 12px; border: none; font-weight: bold; font-size: 16px; cursor: pointer; }
+        .btn-summary-action.primary { background: var(--accent-green); color: var(--bg-dark); }
+        .btn-summary-action.secondary { background: var(--blue-btn); color: var(--text-white); border: 1px solid rgba(255,255,255,0.1); }
+        .btn-summary-action.danger { background: rgba(255, 74, 74, 0.15); color: var(--wrong-red); border: 1px solid var(--wrong-red); }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <header><h1>منصة الاختبارات التفاعلية الشاملة</h1></header>
+        <div class="score-board">النتيجة الإجمالية الحالية: <span id="total-score-span">0</span> / <span id="max-score-span">...</span></div>
+
+        <div class="menu-list" id="main-menu">
+            <div class="menu-card" onclick="startQuiz(1)"><div class="menu-card-info"><div class="menu-icon"><i class="fa-solid fa-route"></i></div><div class="menu-texts"><h2>Menu 1: Routes of drug administration</h2><p>طرق تعاطي الدواء</p></div></div><i class="fa-solid fa-chevron-left"></i></div>
+            <div class="menu-card" onclick="startQuiz(2)"><div class="menu-card-info"><div class="menu-icon"><i class="fa-solid fa-capsules"></i></div><div class="menu-texts"><h2>Menu 2: Dosage form of the drug</h2><p>أشكال جرعات الدواء</p></div></div><i class="fa-solid fa-chevron-left"></i></div>
+            <div class="menu-card" onclick="startQuiz(3)"><div class="menu-card-info"><div class="menu-icon"><i class="fa-solid fa-heart-pulse"></i></div><div class="menu-texts"><h2>Menu 3: Adrenaline:Therapeutic uses, Side effects, Toxicity and Contraindications</h2><p>الأدرينالين بالكامل</p></div></div><i class="fa-solid fa-chevron-left"></i></div>
+            <div class="menu-card" onclick="startQuiz(4)"><div class="menu-card-info"><div class="menu-icon"><i class="fa-solid fa-eye"></i></div><div class="menu-texts"><h2>Menu 4: Atropine: Uses, Side effects, and Contraindications</h2><p>الأتروبين بالكامل</p></div></div><i class="fa-solid fa-chevron-left"></i></div>
+            <div class="menu-card" onclick="startQuiz(5)"><div class="menu-card-info"><div class="menu-icon"><i class="fa-solid fa-shield-virus"></i></div><div class="menu-texts"><h2>Menu 5: Antihistaminics</h2><p>مضادات الهيستامين</p></div></div><i class="fa-solid fa-chevron-left"></i></div>
+            <div class="menu-card" onclick="startQuiz(6)"><div class="menu-card-info"><div class="menu-icon"><i class="fa-solid fa-pills"></i></div><div class="menu-texts"><h2>Menu 6: Mechanism of action. indications and side effects of Nitrates</h2><p>النيترات وآلية عملها</p></div></div><i class="fa-solid fa-chevron-left"></i></div>
+            <div class="menu-card" onclick="startQuiz(7)"><div class="menu-card-info"><div class="menu-icon"><i class="fa-solid fa-prescription-bottle"></i></div><div class="menu-texts"><h2>Menu 7: Penicillins: Mechanism of Action, Types of Penicillins, Therapeutic Uses, Adverse Reactions</h2><p>البنسلينات بالكامل</p></div></div><i class="fa-solid fa-chevron-left"></i></div>
+            <div class="menu-card" onclick="startQuiz(8)"><div class="menu-card-info"><div class="menu-icon"><i class="fa-solid fa-sheet-plastic"></i></div><div class="menu-texts"><h2>Menu 8: Uses of Aspirin</h2><p>استخدامات الأسبرين</p></div></div><i class="fa-solid fa-chevron-left"></i></div>
+            <div class="menu-card" onclick="startQuiz(9)"><div class="menu-card-info"><div class="menu-icon"><i class="fa-solid fa-skull-crossbones"></i></div><div class="menu-texts"><h2>Menu 9: Morphine: Uses, Adverse effects and contraindications</h2><p>المورفين وموانع استعماله</p></div></div><i class="fa-solid fa-chevron-left"></i></div>
+            <div class="menu-card" onclick="startQuiz(10)"><div class="menu-card-info"><div class="menu-icon"><i class="fa-solid fa-syringe"></i></div><div class="menu-texts"><h2>Menu 10: Complications of Insulin Therapy</h2><p>مضاعفات العلاج بالأنسولين</p></div></div><i class="fa-solid fa-chevron-left"></i></div>
+            <div class="menu-card" onclick="startQuiz(11)"><div class="menu-card-info"><div class="menu-icon"><i class="fa-solid fa-kit-medical"></i></div><div class="menu-texts"><h2>Menu 11: Treatment of Diabetic ketoacidosis</h2><p>علاج حماض الدم الكيتوني</p></div></div><i class="fa-solid fa-chevron-left"></i></div>
+            <div class="menu-card" onclick="startQuiz(12)"><div class="menu-card-info"><div class="menu-icon"><i class="fa-solid fa-stomach"></i></div><div class="menu-texts"><h2>Menu 12: Drugs used in treatment of peptic ulcer</h2><p>أدوية علاج قرحة المعدة</p></div></div><i class="fa-solid fa-chevron-left"></i></div>
+        </div>
+
+        <div class="quiz-panel" id="quiz-panel">
+            <div class="quiz-nav-top">
+                <button class="btn-back" onclick="goToMainMenu()"><i class="fa-solid fa-arrow-right"></i> القائمة الرئيسية</button>
+                <span id="current-menu-title" style="font-weight: bold; font-size: 14px; color: var(--text-muted);">Menu 1</span>
+            </div>
+            <div class="question-container">
+                <div class="question-title" id="question-type-label">[List Question]</div>
+                <div class="question-text" id="text-question-body">Question text here...</div>
+                
+                <div class="list-panel">
+                    <button class="btn-trigger-answer" onclick="revealListAnswer()">عرض الإجابة الحرفية</button>
+                    <div class="literal-answer-display" id="literal-answer-display">Literal text from book...</div>
+                    <div class="feedback-container" id="feedback-container">
+                        <p style="font-weight: 600;">هل كانت إجابتك الذهنية/الخارجية صحيحة ومطابقة تماماً؟</p>
+                        <div class="feedback-buttons">
+                            <button class="feedback-btn yes" id="list-yes-btn" onclick="submitListFeedback(true)">نعم، صحيحة</button>
+                            <button class="feedback-btn no" id="list-no-btn" onclick="submitListFeedback(false)">لا، خاطئة</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-controls-bottom">
+                <button class="btn-nav" id="prev-btn" onclick="changeQuestion(-1)">السابق</button>
+                <span id="question-counter" style="font-size: 14px; align-self: center; color: var(--text-muted);">1 / 1</span>
+                <button class="btn-nav" id="next-btn" onclick="changeQuestion(1)">التالي</button>
+            </div>
+        </div>
+
+        <div class="summary-panel" id="summary-panel">
+            <div class="summary-content">
+                <div class="summary-icon" id="summary-icon-box"><i class="fa-solid fa-circle-check"></i></div>
+                <div class="summary-title" id="summary-title-text">اكتمل اختبار هذا القسم!</div>
+                <div class="summary-stat" id="summary-stat-text">لقد أجبت على <span>0</span> من أصل <span>0</span> بشكل صحيح.</div>
+                
+                <div class="summary-actions">
+                    <button class="btn-summary-action danger" id="btn-review-mistakes" onclick="startMistakesReview()" style="display:none;">إعادة اختبار الأسئلة الخاطئة فقط 🔄</button>
+                    <button class="btn-summary-action primary" id="btn-next-menu" onclick="navigateToNextMenu()">الانتقال للدرس التالي ➡️</button>
+                    <button class="btn-summary-action secondary" onclick="restartCurrentMenu()">إعادة الدرس بالكامل من جديد ↩️</button>
+                    <button class="btn-summary-action secondary" onclick="goToMainMenuFromSummary()">العودة للقائمة الرئيسية 🏠</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const megaDatabase = {
+            1: {
+                title: "Menu 1: Routes of drug administration",
+                questions: [
+                    { id: "1-1", q: "• Alimentary (Entral):", a: "1. Orally\n2. Sublingual\n3. Rectal" },
+                    { id: "1-2", q: "• Non alimentary (Parenteral): (Part 1)", a: "1. Intravenous (IV).\n2. Intramuscular (IM).\n3. Intraperitoneal (IP) injection into the peritoneal cavity.\n4. Intradermal (ID) injection between the dermis and the epidermis e.g.BCG sensitivity tests and vaccines.\n5. Subcutenous (SC) injection under the skin e.g.insulin." },
+                    { id: "1-3", q: "• Non alimentary (Parenteral): (Part 2)", a: "6. Intrathecal njection into the sub arachnoid space e.g.spinal anaesthesia.\n7. Intnaaerticular.\n8. Inhalation gases or volatile liquids are used; it is absorbed through the pulmonary mucous membrane.\n9. Topical drugs are applied to the surface of the skin or the mucous membrane." },
+                    { id: "1-4", q: "⭐ [Exam 2022 / 2023]: Give an account on routes of drug administration.", a: "[Alimentary (Entral)]:\n1. Orally\n2. Sublingual\n3. Rectal\n\n[Non alimentary (Parenteral)]:\n1. Intravenous (IV).\n2. Intramuscular (IM).\n3. Intraperitoneal (IP) injection into the peritoneal cavity.\n4. Intradermal (ID) injection between the dermis and the epidermis e.g.BCG sensitivity tests and vaccines.\n5. Subcutenous (SC) injection under the skin e.g.insulin.\n6. Intrathecal njection into the sub arachnoid space e.g.spinal anaesthesia.\n7. Intnaaerticular.\n8. Inhalation gases or volatile liquids are used; it is absorbed through the pulmonary mucous membrane.\n9. Topical drugs are applied to the surface of the skin or the mucous membrane." }
+                ]
+            },
+            2: {
+                title: "Menu 2: Dosage form of the drug",
+                questions: [
+                    { id: "2-1", q: "- Tablets (tab) & - Capsules (caps):", a: "- Tablets (tab): They are round, discoid form of the medication. If they produce gastric irritation, they should be enteric-coated.\n- Capsules (caps): They are small containers of the drugs made of gelatin:\n1. Hard gelatin caps: contain powdered drugs.\n2. Flexible gelatin caps: contain liquid.\n3. Enteric caps. Dissolve only in the intestine." },
+                    { id: "2-2", q: "- Pills & - Powder & - Mixtures:", a: "- Pills: Spherical mass of medicinal substance, e.g., contraceptive pills.\n- Powder : Either dispensed in small packets or as a bulk. E.g. magnesium trisilicate\n- Mixtures: They include syrup and emulsion." },
+                    { id: "2-3", q: "- Syrup & - Emulsion & - Vials and ampoules:", a: "- Syrup: Concentrated aqueous solution of sugar, e.g., syrup toluene Cough\n- Emulsion Are insoluble liquids suspended in water using an emulsifying agent, e.g., cod liver oil emulsion\n- Vials and ampoules :For parenteral injection" }
+                ]
+            },
+            3: {
+                title: "Menu 3: Adrenaline",
+                questions: [
+                    { id: "3-1", q: "2. Therapeutic use (Local ...):-", a: "- To local bleeding as in cases of epistaxis.\n- Added to local anesthetics to treat vasoconstriction.\n- Nasal decongestant in cases.\n- On the eye to treat glaucoma." },
+                    { id: "3-2", q: "3. Therapeutic use (Systemic):-", a: "- Dilates the onchocerciasis in cases of bronchial asthma.\n- Cardiotonic (Can be given intracardiac in cases of heart arrest).\n- Allergy and anaphylactic shock.\n- Hypotensive shock." },
+                    { id: "3-3", q: "4. Side effects of adrenaline :- & 5. Toxicity of adrenaline :- & 6. Contraindications of adrenaline :-", a: "4. Side effects of adrenaline :-\n- Tachycardia - palpitations - anxiety - headache - tremors\n5. Toxicity of adrenaline :-\n- Cardiac arrhythmias and irregularities treated by beta-blockers.\n- Pulmonary edema and pulmonary hypertension.\n- Cerebral hemorrhage due to sudden rise of blood pressure.\n- Gangrene of the fingers if given in high concentration.\n6. Contraindications of adrenaline :-\n- Hypertension.\n- Hyperthyroidism.\n- Angina pectoris because it increases cardiac work and angina." }
+                ]
+            },
+            4: {
+                title: "Menu 4: Atropine",
+                questions: [
+                    { id: "4-1", q: "1. Uses of Atropinen :-", a: "- Preanaesthetic medication to decrease respiratory secretion and dilate bronchi.\n- Examination of the fundus of the eye.\n- Peptic ulcer (pirenzepine).\n- Parkinsonism (benzotropine).\n- Bronchial asthma (ipratropium).\n- Incontinence of urine (cetiprin).\n- Antidote for organophosphorus poisoning.\n- Scopolamine used for motion sickness." },
+                    { id: "4-2", q: "2. Side effects of Atropinen :-", a: "- Constipation due to relaxation of the smooth muscles of the gluteal G.I.T\n- Urine retention in old patients with prostatic enlargement.\n- Tachycardia\n- Blurring of vision.\n- Hamman\n- Palpitations, hallucinations, and dry skin (flushing)." },
+                    { id: "4-3", q: "3. Contraindications of atropine :-", a: "- Hypertensive patients.\n- Glaucoma.\n- Elderly men." },
+                    { id: "4-4", q: "⭐ [Exam 2023]: Enumerate uses and side effects of atropine.", a: "[Uses of Atropinen]:\n- Preanaesthetic medication to decrease respiratory secretion and dilate bronchi.\n- Examination of the fundus of the eye.\n- Peptic ulcer (pirenzepine).\n- Parkinsonism (benzotropine).\n- Bronchial asthma (ipratropium).\n- Incontinence of urine (cetiprin).\n- Antidote for organophosphorus poisoning.\n- Scopolamine used for motion sickness.\n\n[Side effects of Atropinen]:\n- Constipation due to relaxation of the smooth muscles of the gluteal G.I.T\n- Urine retention in old patients with prostatic enlargement.\n- Tachycardia\n- Blurring of vision.\n- Hamman\n- Palpitations, hallucinations, and dry skin (flushing)." },
+                    { id: "4-5", q: "⭐ [Exam 2025]: Atropine: Uses, Side effects, and Contraindications.", a: "[Uses of Atropinen]:\n- Preanaesthetic medication to decrease respiratory secretion and dilate bronchi.\n- Examination of the fundus of the eye.\n- Peptic ulcer (pirenzepine).\n- Parkinsonism (benzotropine).\n- Bronchial asthma (ipratropium).\n- Incontinence of urine (cetiprin).\n- Antidote for organophosphorus poisoning.\n- Scopolamine used for motion sickness.\n\n[Side effects of Atropinen]:\n- Constipation due to relaxation of the smooth muscles of the gluteal G.I.T\n- Urine retention in old patients with prostatic enlargement.\n- Tachycardia\n- Blurring of vision.\n- Hamman\n- Palpitations, hallucinations, and dry skin (flushing).\n\n[Contraindications of atropine]:\n- Hypertensive patients.\n- Glaucoma.\n- Elderly men." }
+                ]
+            },
+            5: {
+                title: "Menu 5: Antihistaminics",
+                questions: [
+                    { id: "5-1", q: "• How to antagonize the actions of histamine ?", a: "1. Physiological antagonism.\n- Adrenaline because it causes vasodilation and bronchodilatation.\n2. Competitive antagonists (antihistaminics).\nThey compete with histamine on the histamine rhinocytes\n- H1 (receptor) antagonists e.g. Fexofenadine,\n- H2 (receptor) antagonists e.g. Cimetidine .\n3. Prevention of histamine release: e.g corticosteroids.\n4. Desensitization By gradually histamine." },
+                    { id: "5-2", q: "• Uses of antihistaminics :- & • Side effects of antihistaminics? & • Uses of H2 receptor antagonists?", a: "• Uses of antihistaminics :-\n- Allergic conditions such as urticaria.\n- Motion sickness.\n- nausea and vomiting of pregnancy.\n• Side effects of antihistaminics?\n- Sedation and drowsiness.\n- Dry mouth.\n• Uses of H2 receptor antagonists?\n- Treatment of peptic ulcer." }
+                ]
+            },
+            6: {
+                title: "Menu 6: Nitrates",
+                questions: [
+                    { id: "6-1", q: "• Mechanism of action of nitrates :", a: "- Direct relaxation of blood vessels and smooth muscles.\n- Relaxation of smooth muscles of coronary arteries leads to coronary vasodilation.\n- Relaxation of arteries and veins leads to decreased blood pressure, which decreases the workload on the heart." },
+                    { id: "6-2", q: "• Indications of nitrates :", a: "- Angina pectoris.\n- Acute pulmonary edema.\n- Congestive heart failure/myocardial infarction.\n- Hypertensive emergency.\n- Biliary colic." },
+                    { id: "6-3", q: "• Side effect of nitrates :", a: "- Throbbing headache and flushing: due to arterial vasodilation.\n- Postural hypotension, dizziness, syncope: due to venodilation.\n- Reflex tachycardia (due to hypotension).\n- Sudden stop withdrawal angina.\n- Tolerance: due to depletion of SH group." },
+                    { id: "6-4", q: "⭐ [Exam 2023]: Mention the Mechanism of action and indication of Nitrates.", a: "[Mechanism of action of nitrates]:\n- Direct relaxation of blood vessels and smooth muscles.\n- Relaxation of smooth muscles of coronary arteries leads to coronary vasodilation.\n- Relaxation of arteries and veins leads to decreased blood pressure, which decreases the workload on the heart.\n\n[Indications of nitrates]:\n- Angina pectoris.\n- Acute pulmonary edema.\n- Congestive heart failure/myocardial infarction.\n- Hypertensive emergency.\n- Biliary colic." }
+                ]
+            },
+            7: {
+                title: "Menu 7: Penicillins",
+                questions: [
+                    { id: "7-1", q: "• Types of Penicillins :", a: "1. Penicillin Gand penicillin V : have a short duration of action and are hydrolyzed by the β-lactamase enzyme.\n2. Benzathine penicillin G:(1.2 million units): It is absorbed very slowly from an intramuscular (IM) - This leads to a reduction in cost,\n3. Procaine penicillin : - 600,000 units used IM. Duration 12- 24 hours\n4. Beta-Lactamase Resistant Penicillins: include: Methicillin and nafcillin. They are the agents of first choice for Freicht of beta-lactamase producing bacteria\n5. Ampicillin and Amoxicillin: These penicillins have extended antimicrobial activity and are used orally." },
+                    { id: "7-2", q: "• Therapeutic Uses :", a: "- Pneumonia and Meningitis.\n- Pharyngitis, and Endocarditis.\n- Diphtheria\n- Urinary Tract Infections\n- Salmonella Infections" },
+                    { id: "7-3", q: "• Adverse Reactions :", a: "1. Hypersensitivity Reactions\n- These are the most common adverse effects that occur with penicillins.\n2. Oral penicillins in large dose lead to nausea, vomiting, and diarrhea.\n3. Seizures in patients with renal failure.\n4. Pain and sterile inflammatory reactions at the sites of I.M. injections." }
+                ]
+            },
+            8: {
+                title: "Menu 8: Uses of Aspirin",
+                questions: [
+                    { id: "8-1", q: "8. Uses of Aspirin :-", a: "- Analgesic : in headache, myalgia, and arthalgia.\n- Antipyretic : decreases the elevated body temperature.\n- Anti-inflammatory : in rheumatic fever and rheumatoid arthritis.\n- Antithrombotic : decreases the risk of myocardial infarction.\n- Prevention of colon cancer." },
+                    { id: "8-2", q: "⭐ [Exam 2022]: Mention uses of aspirin.", a: "- Analgesic : in headache, myalgia, and arthalgia.\n- Antipyretic : decreases the elevated body temperature.\n- Anti-inflammatory : in rheumatic fever and rheumatoid arthritis.\n- Antithrombotic : decreases the risk of myocardial infarction.\n- Prevention of colon cancer." }
+                ]
+            },
+            9: {
+                title: "Menu 9: Morphine",
+                questions: [
+                    { id: "9-1", q: "• Uses :", a: "1. Analgesic.\nAcute trauma.\n➢ Chronic visceral pain\n➢ Postoperative pain\n➢ Cancer pain\n➢ Myocardial infarction\n2. In anesthesia: Pre-anesthesia.\n3. Acute pulmonary edema in acute heart failure.\n4. Antidiarreal: Loperamide, Diphenoxylate." },
+                    { id: "9-2", q: "• Adverse effects and contraindications :", a: "1.Masks pain: (contraindication: acute undiagnosed abdomen).\n2. Sedation.\n3. Drug dependence.\n4. Hypotension.\n5. Nausea-vomiting - sever constipation.\n6. Respiratory depression.\n7. Increased intracranial Tension: (contraindication: head).\n8. Miosis.\n9. Urine retention: (contraindication: enlarged prostate).\n10. Biliary spasm (contraindication: biliary colic).\n11. Itching.\n12. Bronchospasm (contraindication: asthma)." }
+                ]
+            },
+            10: {
+                title: "Menu 10: Complications of Insulin Therapy",
+                questions: [
+                    { id: "10-1", q: "10. Complications of Insulin Therapy :-", a: "1. Hypoglycemia : It is the most common complication of insulin therapy. They may result from:\n- Delay in taking a meal.\n- Inadequate carbohydrate cons umed.\n- Unusual physical exertion.\n- Too large Dose of insulin.\n2. Insulin Allergy : Local or systemic urticaria results from histamine release.\n3. Insulin Resistance.\n4. Lipodystrophy : Atrophy of subcutaneous fatfy tissue at the site of injection. It decreased by use of human insulin." },
+                    { id: "10-2", q: "⭐ [Exam 2022 / 2023 / 2025]: Mention the complications of insulin therapy. / Complications of Insulin Therapy.", a: "1. Hypoglycemia : It is the most common complication of insulin therapy. They may result from:\n- Delay in taking a meal.\n- Inadequate carbohydrate cons umed.\n- Unusual physical exertion.\n- Too large Dose of insulin.\n2. Insulin Allergy : Local or systemic urticaria results from histamine release.\n3. Insulin Resistance.\n4. Lipodystrophy : Atrophy of subcutaneous fatfy tissue at the site of injection. It decreased by use of human insulin." }
+                ]
+            },
+            11: {
+                title: "Menu 11: Treatment of Diabetic ketoacidosis",
+                questions: [
+                    { id: "11-1", q: "11. Treatment of Diabetic ketoacidosis :-", a: "1. Fluid replacement (1st and most important line of tratment):\n- Isotonic saline\n- Add 5% glucose if blood glucose less than 250mg/di to avoid cerebral edema\n2. insulin therapy.\n3. potassium replacement.\n4. Bicarbonate administration.\n5. Treatment of underlying cause: infectiony antibiotics." },
+                    { id: "11-2", q: "⭐ [Exam 2024]: Treatment of Diabetic ketoacidosis (DKA).", a: "1. Fluid replacement (1st and most important line of tratment):\n- Isotonic saline\n- Add 5% glucose if blood glucose less than 250mg/di to avoid cerebral edema\n2. insulin therapy.\n3. potassium replacement.\n4. Bicarbonate administration.\n5. Treatment of underlying cause: infectiony antibiotics." }
+                ]
+            },
+            12: {
+                title: "Menu 12: Peptic ulcer treatment",
+                questions: [
+                    { id: "12-1", q: "12. Drugs used in treatment of peptic ulcer :-", a: "1. Antacids to control hyperacidity.\n2. H²-receptor antagonists e.g. rantidine and famotidine.\n3. Parasympatholytics e.g. atropine and atropine .\n4. Mucosal protective agents e.g. carbenoxalone and sanifate.\n5. Prostaglandin Analogs e.g. Misoprostol\n6. proton pump inhibitors e.g. Omeprazole and The patient should avoid smoking, spices, caffeine, alcohol, and drugs e.g., aspirin, and is advised to take regular small meals." },
+                    { id: "12-2", q: "⭐ [Exam 2022]: Mention the drugs used in treatment of peptic ulcer.", a: "1. Antacids to control hyperacidity.\n2. H²-receptor antagonists e.g. rantidine and famotidine.\n3. Parasympatholytics e.g. atropine and atropine .\n4. Mucosal protective agents e.g. carbenoxalone and sanifate.\n5. Prostaglandin Analogs e.g. Misoprostol\n6. proton pump inhibitors e.g. Omeprazole and The patient should avoid smoking, spices, caffeine, alcohol, and drugs e.g., aspirin, and is advised to take regular small meals." }
+                ]
+            }
+        };
+
+        let totalQuestionsCount = 0;
+        Object.keys(megaDatabase).forEach(k => { totalQuestionsCount += megaDatabase[k].questions.length; });
+        document.getElementById('max-score-span').innerText = totalQuestionsCount;
+
+        let currentActiveSection = 1;
+        let currentQuestionIdx = 0;
+        
+        let pointsState = {};       
+        let currentMenuPool = [];   
+        let isReviewMode = false;   
+
+        function startQuiz(menuId) {
+            currentActiveSection = menuId;
+            currentQuestionIdx = 0;
+            isReviewMode = false;
+            currentMenuPool = [...megaDatabase[menuId].questions];
+            
+            document.getElementById('main-menu').style.display = 'none';
+            document.getElementById('summary-panel').style.display = 'none';
+            document.getElementById('quiz-panel').style.display = 'block';
+            document.getElementById('current-menu-title').innerText = megaDatabase[menuId].title;
+            loadQuestion();
+        }
+
+        function goToMainMenu() {
+            document.getElementById('quiz-panel').style.display = 'none';
+            document.getElementById('summary-panel').style.display = 'none';
+            document.getElementById('main-menu').style.display = 'flex';
+        }
+
+        function loadQuestion() {
+            const q = currentMenuPool[currentQuestionIdx];
+            const scoreKey = q.id;
+
+            document.getElementById('question-counter').innerText = `${currentQuestionIdx + 1} / ${currentMenuPool.length}`;
+            document.getElementById('prev-btn').disabled = currentQuestionIdx === 0;
+            
+            if (currentQuestionIdx === currentMenuPool.length - 1) {
+                document.getElementById('next-btn').innerText = "إنهاء ورؤية النتيجة 📊";
+            } else {
+                document.getElementById('next-btn').innerText = "التالي";
+            }
+
+            document.getElementById('text-question-body').innerText = q.q;
+            document.getElementById('literal-answer-display').innerText = q.a;
+
+            document.getElementById('literal-answer-display').style.display = 'none';
+            document.getElementById('feedback-container').style.display = 'none';
+
+            if (pointsState[scoreKey] !== undefined && !isReviewMode) {
+                document.getElementById('literal-answer-display').style.display = 'block';
+                document.getElementById('feedback-container').style.display = 'block';
+                document.getElementById('list-yes-btn').disabled = true;
+                document.getElementById('list-no-btn').disabled = true;
+            } else {
+                document.getElementById('list-yes-btn').disabled = false;
+                document.getElementById('list-no-btn').disabled = false;
+            }
+        }
+
+        function revealListAnswer() {
+            document.getElementById('literal-answer-display').style.display = 'block';
+            document.getElementById('feedback-container').style.display = 'block';
+        }
+
+        function submitListFeedback(isCorrect) {
+            const q = currentMenuPool[currentQuestionIdx];
+            const scoreKey = q.id;
+            
+            if (isReviewMode) {
+                if (isCorrect && pointsState[scoreKey] === false) {
+                    pointsState[scoreKey] = true;
+                    modifyTotalScore(1);
+                }
+            } else {
+                if (pointsState[scoreKey] === undefined) {
+                    pointsState[scoreKey] = isCorrect;
+                    if (isCorrect) modifyTotalScore(1);
+                }
+            }
+
+            document.getElementById('list-yes-btn').disabled = true;
+            document.getElementById('list-no-btn').disabled = true;
+        }
+
+        function changeQuestion(direction) {
+            if (direction === 1 && currentQuestionIdx === currentMenuPool.length - 1) {
+                showMenuSummary();
+                return;
+            }
+            currentQuestionIdx += direction;
+            loadQuestion();
+        }
+
+        function showMenuSummary() {
+            document.getElementById('quiz-panel').style.display = 'none';
+            document.getElementById('summary-panel').style.display = 'block';
+
+            const fullSectionQuestions = megaDatabase[currentActiveSection].questions;
+            let correctCount = 0;
+            let wrongQuestions = [];
+
+            fullSectionQuestions.forEach(q => {
+                if (pointsState[q.id] === true) {
+                    correctCount++;
+                } else {
+                    wrongQuestions.push(q);
+                }
+            });
+
+            const statText = document.getElementById('summary-stat-text');
+            statText.innerHTML = `لقد أجبت على <span>${correctCount}</span> من أصل <span>${fullSectionQuestions.length}</span> أسئلة بشكل صحيح.`;
+
+            const iconBox = document.getElementById('summary-icon-box');
+            const titleText = document.getElementById('summary-title-text');
+            const reviewBtn = document.getElementById('btn-review-mistakes');
+            const nextMenuBtn = document.getElementById('btn-next-menu');
+
+            if (wrongQuestions.length > 0) {
+                iconBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation" style="color: var(--wrong-red);"></i>`;
+                titleText.innerText = "تحتاج إلى مراجعة بعض الأسئلة!";
+                reviewBtn.style.display = "block";
+            } else {
+                iconBox.innerHTML = `<i class="fa-solid fa-circle-check"></i>`;
+                titleText.innerText = "ممتاز! تقفيل كامل للدرس 🎉";
+                reviewBtn.style.display = "none";
+            }
+
+            if (currentActiveSection >= 12) {
+                nextMenuBtn.style.display = "none";
+            } else {
+                nextMenuBtn.style.display = "block";
+            }
+        }
+
+        function startMistakesReview() {
+            const fullSectionQuestions = megaDatabase[currentActiveSection].questions;
+            const wrongQuestions = fullSectionQuestions.filter(q => pointsState[q.id] !== true);
+
+            if (wrongQuestions.length > 0) {
+                currentMenuPool = [...wrongQuestions];
+                currentQuestionIdx = 0;
+                isReviewMode = true;
+
+                document.getElementById('summary-panel').style.display = 'none';
+                document.getElementById('quiz-panel').style.display = 'block';
+                loadQuestion();
+            }
+        }
+
+        function restartCurrentMenu() {
+            megaDatabase[currentActiveSection].questions.forEach(q => {
+                if (pointsState[q.id] === true) modifyTotalScore(-1);
+                delete pointsState[q.id];
+            });
+            startQuiz(currentActiveSection);
+        }
+
+        function navigateToNextMenu() {
+            if (currentActiveSection < 12) {
+                startQuiz(currentActiveSection + 1);
+            }
+        }
+
+        function goToMainMenuFromSummary() {
+            goToMainMenu();
+        }
+
+        function modifyTotalScore(val) {
+            const sSpan = document.getElementById('total-score-span');
+            let currentS = parseInt(sSpan.innerText);
+            currentS += val;
+            sSpan.innerText = currentS;
+        }
+    </script>
+</body>
+</html>
